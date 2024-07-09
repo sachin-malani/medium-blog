@@ -2,9 +2,9 @@ import { Hono } from "hono";
 import blog from "./blog";
 import user from "./user";
 
-const router = new Hono();
+const app = new Hono();
 
-router.route('/user', user);
-router.route('/blog', blog);
+app.route('/user', user);
+app.route('/blog', blog);
 
-export default router;
+export default app;
