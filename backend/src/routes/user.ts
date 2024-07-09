@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { sign } from "hono/jwt";
+import { signinInput, signupInput } from "@kichak/medium-blog";
 
 const user = new Hono<{
     Bindings: {
@@ -12,7 +13,12 @@ const user = new Hono<{
 
 user.post("/signup", async (c) => {
       const body = await c.req.json();
-    
+
+      const { success } = signupInput.safeParse(body);
+      if(!success) {
+        return c.json({ message: "Invalid inputs" }, 400);
+      }
+      
       const registeredUser = await userExists(body.email, c.env.DATABASE_URL);
       if(registeredUser){
         return c.json({ message: "User already registered" }, 403)
@@ -41,6 +47,11 @@ user.post("/signup", async (c) => {
 user.post('/signin', async (c) => {
     try {
       const body = await c.req.json();
+
+      const { success } = signinInput.safeParse(body);      
+      if(!success) {
+        return c.json({ message: "Invalid inputs" }, 400);
+      }
 
       const user = await userExists(body.email, c.env.DATABASE_URL);
       
