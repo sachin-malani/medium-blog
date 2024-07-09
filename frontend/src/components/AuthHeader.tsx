@@ -12,7 +12,7 @@ const AuthHeader = ({ type }: { type: "signup" | "signin" }) => {
           : "Already have an account? "}
         <Link
           className="underline"
-          to={type === "signin" ? "/signup" : "/signin"}
+          to={type === "signin" ? "/signup" : "/"}
         >
           {type === "signin" ? "Sign up" : "Sign in"}
         </Link>

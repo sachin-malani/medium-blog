@@ -18,17 +18,19 @@ const Signin = () => {
   const onSubmit = async () => {
     try {
       const response = await axios.post(BACKEND_URL + SIGNIN_URL, postInputs);
-      const jwt = response.data;
-      localStorage.setItem("token", jwt);
+      const json = response.data;
+      localStorage.setItem("token", json.jwt);
       navigate("/blog/1");
-    } catch (error) {}
+    } catch (error) {
+      alert(error);
+    }
   };
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2">
       <div>
         <div className="mx-4 h-screen flex flex-col justify-center">
           <div className="flex justify-center">
-            <div>
+            <form onSubmit={(e) => e.preventDefault()}>
               <AuthHeader type="signin" />
               <div className="pt-4">
                 <AuthInput
@@ -60,7 +62,7 @@ const Signin = () => {
                   Sign In
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
