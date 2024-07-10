@@ -17,7 +17,7 @@ const BlogPage = ({ blog }: { blog: Blog }) => {
             <div className="text-slate-600 text-lg">Author</div>
             <div className="flex gap-3">
               <div className="flex flex-col justify-center">
-                <Avatar name={blog.author.name} />
+                <Avatar name={blog.author.name || "Anonymous"} />
               </div>
               <div>
                 <div className=" text-xl font-semibold">

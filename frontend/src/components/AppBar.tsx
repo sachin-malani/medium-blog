@@ -11,6 +11,15 @@ const AppBar = () => {
         </Link>
       </div>
       <div>
+        <Link to={"/publish"}>
+          <button
+            type="button"
+            className="text-white bg-green-400 hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-1 text-center me-2 mb-2"
+          >
+            Publish
+          </button>
+        </Link>
+
         <Avatar name="Sachin" />
       </div>
     </div>
