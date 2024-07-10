@@ -20,7 +20,7 @@ const Signin = () => {
       const response = await axios.post(BACKEND_URL + SIGNIN_URL, postInputs);
       const json = response.data;
       localStorage.setItem("token", json.jwt);
-      navigate("/blog/1");
+      navigate("/blogs");
     } catch (error) {
       alert(error);
     }
@@ -57,7 +57,7 @@ const Signin = () => {
                 <button
                   type="button"
                   onClick={onSubmit}
-                  className="w-full mt-6 text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                  className="w-full mt-6 text-white bg-black hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
                 >
                   Sign In
                 </button>

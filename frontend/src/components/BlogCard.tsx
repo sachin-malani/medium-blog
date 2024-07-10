@@ -28,7 +28,7 @@ const BlogCard = ({
 
 export default BlogCard;
 
-function Avatar({ name }: { name: string }) {
+export function Avatar({ name }: { name: string }) {
   return (
     <div className="relative inline-flex items-center justify-center w-6 h-6 overflow-hidden bg-gray-600 rounded-full">
       <span className="font-medium text-xs text-white">{name[0]}</span>
