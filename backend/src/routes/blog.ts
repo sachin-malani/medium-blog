@@ -6,39 +6,37 @@ import { createBlogInput, updateBlogInput } from "@kichak/medium-blog";
 
 const blog = new Hono<{
   Bindings: {
-    DATABASE_URL: string,
-    JWT_SECRET: string
-  },
+    DATABASE_URL: string;
+    JWT_SECRET: string;
+  };
   Variables: {
     userId: string;
   };
 }>();
 
-blog.use('/*' , async (c, next) => {
+blog.use("/*", async (c, next) => {
   try {
     const header = c.req.header("authorization") || "";
     const token = header.split(" ")[1];
 
     const user = await verify(token, c.env.JWT_SECRET);
-  
-    if(user){
+
+    if (user) {
       c.set("userId", user.id as string);
       await next();
     }
     return c.json({ message: "Unauthorized" }, 403);
-
   } catch (error) {
     return c.json({ message: "Invalid headers" }, 403);
   }
-
 });
 
-blog.post('/', async (c) => {
+blog.post("/", async (c) => {
   try {
     const body = await c.req.json();
 
     const { success } = createBlogInput.safeParse(body);
-    if(!success){
+    if (!success) {
       return c.json({ message: "Invalid inputs" }, 400);
     }
 
@@ -52,26 +50,25 @@ blog.post('/', async (c) => {
       data: {
         title: body.title,
         content: body.content,
-        authorId: Number(authorId)
+        authorId: Number(authorId),
       },
       select: {
-        id: true
-      }
+        id: true,
+      },
     });
 
     return c.json({ id: blog.id });
-
   } catch (error) {
     return c.json({ message: error }, 500);
   }
 });
 
-blog.put('/', async (c) => {
+blog.put("/", async (c) => {
   try {
     const body = await c.req.json();
 
     const { success } = updateBlogInput.safeParse(body);
-    if(!success){
+    if (!success) {
       return c.json({ message: "Invalid inputs" }, 400);
     }
 
@@ -81,22 +78,21 @@ blog.put('/', async (c) => {
 
     const update = await prisma.post.update({
       where: {
-        id: body.id
+        id: body.id,
       },
       data: {
         title: body.title,
         content: body.content,
-      }
+      },
     });
 
     return c.json({ message: "Updated Succefully", update });
-
   } catch (error) {
     return c.json({ message: error }, 500);
   }
 });
 
-blog.get('/id/:id', async (c) => {
+blog.get("/id/:id", async (c) => {
   try {
     const id = await c.req.param("id");
     const prisma = new PrismaClient({
@@ -105,27 +101,36 @@ blog.get('/id/:id', async (c) => {
 
     const getBlog = await prisma.post.findFirst({
       where: {
-        id: Number(id)
-      }
+        id: Number(id),
+      },
     });
 
     return c.json({ getBlog });
-
   } catch (error) {
     return c.json({ message: error }, 500);
   }
 });
 
-blog.get('/bulk', async (c) => {
+blog.get("/bulk", async (c) => {
   try {
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
 
-    const getBlog = await prisma.post.findMany();
+    const getBlog = await prisma.post.findMany({
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
 
     return c.json({ getBlog });
-
   } catch (error) {
     return c.json({ message: error }, 500);
   }
