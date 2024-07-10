@@ -1,30 +1,29 @@
 import AppBar from "../components/AppBar";
 import BlogCard from "../components/BlogCard";
+import useBlogs from "../hooks/useBlogs";
 
 const Blogs = () => {
+  const { loading, blogs } = useBlogs();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <AppBar />
       <div className="flex justify-center">
-        <div className="flex flex-col justify-center max-w-xl">
-          <BlogCard
-            authorName="Sachin Jain"
-            title="How an Ugly Single-Page Website makes $5,000 a Month with Affiliate Marketing"
-            content="content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty"
-            publishedOn="10th July 2024"
-          />
-          <BlogCard
-            authorName="Sachin Jain"
-            title="How an Ugly Single-Page Website makes $5,000 a Month with Affiliate Marketing"
-            content="content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty"
-            publishedOn="10th July 2024"
-          />
-          <BlogCard
-            authorName="Sachin Jain"
-            title="How an Ugly Single-Page Website makes $5,000 a Month with Affiliate Marketing"
-            content="content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty, content of the blog which is not good currently but will work on it and alter it to make it look pretty"
-            publishedOn="10th July 2024"
-          />
+        <div>
+          {blogs.map((blog) => (
+            <BlogCard
+              key={blog.id}
+              id = {blog.id}
+              authorName={blog.author.name || "Anonymous"}
+              title={blog.title}
+              content={blog.content}
+              publishedOn="10th July 2024"
+            />
+          ))}
         </div>
       </div>
     </div>
