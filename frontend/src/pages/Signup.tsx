@@ -6,6 +6,9 @@ import AuthInput from "../components/AuthInput";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL, SIGNUP_URL } from "../config";
+import { Alert, Snackbar } from "@mui/material";
+import useErrorAlert from "../hooks/useErrorAlert";
+import ErrorAlert from "../utility/ErrorAlert";
 
 const Signup = () => {
   const [postInputs, setPostInputs] = useState<SignupInput>({
@@ -13,17 +16,26 @@ const Signup = () => {
     email: "",
     password: "",
   });
-
+  const { error, open, showError, handleClose } = useErrorAlert();
   const navigate = useNavigate();
 
   const onSubmit = async () => {
     try {
       const response = await axios.post(BACKEND_URL + SIGNUP_URL, postInputs);
-      const json = response.data;
-      localStorage.setItem("token", json.jwt);
-      navigate("/blogs");
+
+      if (response.status === 200) {
+        const json = response.data;
+        localStorage.setItem("token", json.jwt);
+        navigate("/blogs");
+      } else {
+        showError(response.data.message);
+      }
     } catch (error) {
-      alert(error);
+      if (axios.isAxiosError(error) && error.response) {
+        showError(error.response.data.message);
+      } else {
+        showError("An unexpected error occurred.");
+      }
     }
   };
 
@@ -81,6 +93,7 @@ const Signup = () => {
       <div className="hidden lg:block">
         <Quote />
       </div>
+      <ErrorAlert error={error} open={open} handleClose={handleClose} />
     </div>
   );
 };

@@ -6,14 +6,16 @@ import AuthInput from "../components/AuthInput";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL, SIGNIN_URL } from "../config";
+import useErrorAlert from "../hooks/useErrorAlert";
+import ErrorAlert from "../utility/ErrorAlert";
 
 const Signin = () => {
   const [postInputs, setPostInputs] = useState<SigninInput>({
     email: "",
     password: "",
   });
-
   const navigate = useNavigate();
+  const { error, open, showError, handleClose } = useErrorAlert();
 
   const onSubmit = async () => {
     try {
@@ -22,7 +24,11 @@ const Signin = () => {
       localStorage.setItem("token", json.jwt);
       navigate("/blogs");
     } catch (error) {
-      alert(error);
+      if (axios.isAxiosError(error) && error.response) {
+        showError(error.response.data.message);
+      } else {
+        showError("An unexpected error occurred.");
+      }
     }
   };
   return (
@@ -69,6 +75,7 @@ const Signin = () => {
       <div className="hidden lg:block">
         <Quote />
       </div>
+      <ErrorAlert error={error} open={open} handleClose={handleClose} />
     </div>
   );
 };
